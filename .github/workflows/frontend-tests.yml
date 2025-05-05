@@ -23,9 +23,17 @@ jobs:
           cache: 'npm'
           cache-dependency-path: frontend/package-lock.json
 
-      - name: Instalar dependências (omit optional)
+      - name: Limpar dependências antigas
         working-directory: frontend
-        run: npm ci --omit=optional
+        run: |
+          rm -rf node_modules
+          rm -f package-lock.json
+
+      - name: Instalar dependências com Rollup fixado
+        working-directory: frontend
+        run: |
+          npm install rollup@3 --save-dev
+          npm install --omit=optional
 
       - name: Rodar testes com Vitest
         working-directory: frontend
