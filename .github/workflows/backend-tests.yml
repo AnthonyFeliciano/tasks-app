@@ -1,0 +1,59 @@
+name: CI - Backend Tests
+
+on:
+  push:
+    branches:
+      - dev
+  pull_request:
+    branches:
+      - dev
+
+jobs:
+  laravel-tests:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: testing_db
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+    steps:
+      - name: Clonar o projeto
+        uses: actions/checkout@v3
+
+      - name: Configurar PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+          extensions: mbstring, pdo, pdo_mysql
+          coverage: none
+
+      - name: Instalar dependências do Laravel
+        working-directory: backend
+        run: composer install --prefer-dist --no-progress --no-suggest
+
+      - name: Preparar arquivo .env
+        working-directory: backend
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      - name: Esperar MySQL estar pronto
+        run: sleep 10
+
+      - name: Rodar migrations
+        working-directory: backend
+        run: php artisan migrate --force
+
+      - name: Rodar testes
+        working-directory: backend
+        run: php artisan test
