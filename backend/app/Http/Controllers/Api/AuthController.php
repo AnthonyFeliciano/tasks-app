@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 
-//Models
 use App\Models\User;
 
 class AuthController extends Controller
@@ -18,14 +17,16 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => 'required|string|min:8|max:255|confirmed',
         ], [
             'name.required' => 'O campo nome é obrigatório.',
             'email.required' => 'O campo e-mail é obrigatório.',
             'email.email' => 'Informe um e-mail válido.',
             'email.unique' => 'Este e-mail já está cadastrado.',
             'password.required' => 'O campo senha é obrigatório.',
-            'password.min' => 'A senha deve ter no mínimo 8 caracteres.',
+            'password.min' => 'A senha deve ter no mínimo :min caracteres.',
+            'password.string' => 'A senha deve ser um texto.',
+            'password.max' => 'A senha não pode ter mais que :max caracteres.',
             'password.confirmed' => 'A confirmação da senha não confere.',
         ]);
     

@@ -44,7 +44,14 @@ class ForgotPasswordController extends Controller
     public function resetPassword(Request $request, $token)
     {
         $request->validate([
-            'password' => 'required|string|min:6|confirmed',
+            'password' => 'required|string|min:8|max:255|confirmed',
+        ],
+        [
+            'password.required' => 'O campo senha é obrigatório.',
+            'password.string' => 'A senha deve ser um texto.',
+            'password.max' => 'A senha não pode ter mais que :max caracteres.',
+            'password.min' => 'A senha deve ter no mínimo :min caracteres.',
+            'password.confirmed' => 'A confirmação da senha não confere.',
         ]);
 
         // Como os tokens são criptografados, precisamos verificar um por um
