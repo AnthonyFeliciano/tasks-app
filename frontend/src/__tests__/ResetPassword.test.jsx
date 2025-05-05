@@ -23,15 +23,15 @@ describe('ResetPassword Page', () => {
 
   test('exibe os campos corretamente', () => {
     renderWithToken();
-    expect(screen.getByPlaceholderText('Nova senha')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Nova senha (mínimo 8 caracteres)')).toBeInTheDocument();
     expect(screen.getByPlaceholderText('Confirme a nova senha')).toBeInTheDocument();
   });
 
   test('exibe erro se senhas não coincidem', async () => {
     renderWithToken();
 
-    fireEvent.change(screen.getByPlaceholderText('Nova senha'), {
-      target: { value: '123456' },
+    fireEvent.change(screen.getByPlaceholderText('Nova senha (mínimo 8 caracteres)'), {
+      target: { value: '12345678' },
     });
     fireEvent.change(screen.getByPlaceholderText('Confirme a nova senha'), {
       target: { value: 'diferente' },
@@ -47,19 +47,19 @@ describe('ResetPassword Page', () => {
 
     renderWithToken('validtoken');
 
-    fireEvent.change(screen.getByPlaceholderText('Nova senha'), {
-      target: { value: '123456' },
+    fireEvent.change(screen.getByPlaceholderText('Nova senha (mínimo 8 caracteres)'), {
+      target: { value: '12345678' },
     });
     fireEvent.change(screen.getByPlaceholderText('Confirme a nova senha'), {
-      target: { value: '123456' },
+      target: { value: '12345678' },
     });
 
     fireEvent.click(screen.getByRole('button', { name: /redefinir senha/i }));
 
     expect(await screen.findByText(/senha redefinida com sucesso/i)).toBeInTheDocument();
     expect(authApi.resetPassword).toHaveBeenCalledWith({
-      password: '123456',
-      password_confirmation: '123456',
+      password: '12345678',
+      password_confirmation: '12345678',
       token: 'validtoken',
     });
   });
@@ -71,11 +71,11 @@ describe('ResetPassword Page', () => {
 
     renderWithToken('invalidtoken');
 
-    fireEvent.change(screen.getByPlaceholderText('Nova senha'), {
-      target: { value: '123456' },
+    fireEvent.change(screen.getByPlaceholderText('Nova senha (mínimo 8 caracteres)'), {
+      target: { value: '12345678' },
     });
     fireEvent.change(screen.getByPlaceholderText('Confirme a nova senha'), {
-      target: { value: '123456' },
+      target: { value: '12345678' },
     });
 
     fireEvent.click(screen.getByRole('button', { name: /redefinir senha/i }));
