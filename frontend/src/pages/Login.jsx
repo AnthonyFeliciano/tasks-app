@@ -93,7 +93,7 @@ export default function Login() {
           {isSubmitting ? "Entrando..." : "Entrar"}
         </Button>
 
-        <VisitorButton to="/tasks" />
+        <VisitorButton />
 
         <Link
           to="/forgot-password"

@@ -132,15 +132,15 @@ export default function Register() {
           required
         />
 
-{generalError && (
-  <div
-    role="alert"
-    data-testid="register-error"
-    className="bg-red-100 text-red-700 text-sm px-4 py-2 rounded text-center border border-red-200"
-  >
-    {generalError}
-  </div>
-)}
+        {generalError && (
+          <div
+            role="alert"
+            data-testid="register-error"
+            className="bg-red-100 text-red-700 text-sm px-4 py-2 rounded text-center border border-red-200"
+          >
+            {generalError}
+          </div>
+        )}
 
 
         <Button type="submit" disabled={isSubmitting}>

@@ -14,7 +14,19 @@
     }, false);
   };
 
+  export const guestLogin = async () => {
+    return apiFetch("/guest-login", {
+      method: "POST",
+    }, false); 
+  };
 
+  export const resetPassword = async ({ token, password, password_confirmation }) => {
+    return apiFetch(`/reset-password/${token}`, {
+      method: "POST",
+      body: JSON.stringify({ password, password_confirmation }),
+    }, false);
+  };
+  
   export const logout = async () => {
     return apiFetch("/logout", { method: "POST" });
   };
