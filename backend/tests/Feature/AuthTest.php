@@ -9,7 +9,7 @@ use App\Models\User;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
-class AuthApiTest extends TestCase
+class AuthTest extends TestCase
 {
     use RefreshDatabase;
 
