@@ -59,7 +59,7 @@ export default function ResetPassword() {
         <Input
           type="password"
           name="password"
-          placeholder="Nova senha"
+          placeholder="Nova senha (mínimo 8 caracteres)"
           value={form.password}
           onChange={handleChange}
           required
