@@ -4,10 +4,11 @@ import Register from '../pages/Register';
 import ForgotPassword from '../pages/ForgotPassword';
 import ResetPassword from '../pages/ResetPassword';
 import TaskList from '../pages/TaskList';
+import NotFound from '../pages/NotFound';
 import ProtectedRoute from './ProtectedRoute';
 import GuestRoute from './GuestRoute';
 
-const AppRoutes = () => {
+export default function AppRoutes() {
   return (
     <Routes>
       <Route
@@ -50,8 +51,8 @@ const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
+      {/* Rota padrão 404 */}
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
-};
-
-export default AppRoutes;
+}

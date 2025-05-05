@@ -56,7 +56,7 @@ describe('ForgotPassword Page', () => {
     });
 
     render(
-      <MemoryRouter>
+      <MemoryRouter>    
         <ForgotPassword />
       </MemoryRouter>
     );
