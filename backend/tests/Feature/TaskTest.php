@@ -7,13 +7,14 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use Laravel\Sanctum\Sanctum;
-
+use PHPUnit\Framework\Attributes\Test;
 
 class TaskTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_user_can_list_tasks()
+    #[Test]
+    public function user_can_list_tasks()
     {
         $user = User::factory()->create();
         Sanctum::actingAs($user);
@@ -25,23 +26,24 @@ class TaskTest extends TestCase
         $response = $this->getJson('/api/tasks');
 
         $response->assertStatus(200)
-                 ->assertJsonStructure([
-                     'status',
-                     'tasks' => [
-                         '*' => [
-                             'id',
-                             'user_id',
-                             'title',
-                             'description',
-                             'is_completed',
-                             'created_at',
-                             'updated_at',
-                         ],
-                     ],
-                 ]);
+                    ->assertJsonStructure([
+                        'status',
+                        'tasks' => [
+                            '*' => [
+                                'id',
+                                'user_id',
+                                'title',
+                                'description',
+                                'is_completed',
+                                'created_at',
+                                'updated_at',
+                            ],
+                        ],
+                    ]);
     }
 
-    public function test_user_can_create_task()
+    #[Test]
+    public function user_can_create_task()    
     {
         $user = User::factory()->create();
         Sanctum::actingAs($user);
@@ -80,7 +82,8 @@ class TaskTest extends TestCase
         ]);
     }
 
-    public function test_user_can_update_task()
+    #[Test]
+    public function user_can_update_task()
     {
         $user = User::factory()->create();
         Sanctum::actingAs($user);
@@ -124,7 +127,8 @@ class TaskTest extends TestCase
         ]);
     }
 
-    public function test_user_can_delete_task()
+    #[Test]
+    public function user_can_delete_task()
     {
         $user = User::factory()->create();
         Sanctum::actingAs($user);
