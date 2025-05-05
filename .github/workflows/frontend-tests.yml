@@ -16,8 +16,8 @@ jobs:
       - name: Clonar o projeto
         uses: actions/checkout@v3
 
-      - name: Atualizar npm para suportar overrides
-        run: npm install -g npm@latest
+      - name: Atualizar npm localmente para suportar overrides
+        run: npm install npm@latest
 
       - name: Configurar Node.js
         uses: actions/setup-node@v3
