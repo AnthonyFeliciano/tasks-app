@@ -1,11 +1,22 @@
 # 📦 Tasks App - Backend e Frontend
 
-Este projeto é dividido em duas partes:
+Projeto que todo mundo já fez mas serve para consolidar conhecimentos: API RESTful de Gerenciamento de Tarefas com Autenticação via Token usando Laravel Sanctum e Frontend em ReactJS.
 
-* `/frontend` – Interface do usuário feita com **React + Vite**
-* `/backend` – API RESTful feita com **Laravel 12**
+---
 
-O objetivo é fornecer uma aplicação completa de gerenciamento de tarefas com autenticação via JWT, login como visitante e uma UI moderna e responsiva.
+## 🧭 Visão Geral Funcional
+
+Uma aplicação full-stack para **gerenciamento de tarefas com autenticação JWT**, ideal para aprendizado e prática de integração frontend-backend.
+
+### Principais funcionalidades:
+
+- Cadastro, login e logout de usuários
+- Login como visitante sem necessidade de registro
+- Redefinição de senha via e-mail
+- Listagem, criação, edição, conclusão e exclusão de tarefas
+- Integração via JWT e Context API
+- Testes automatizados no backend (PHPUnit) e frontend (Vitest)
+- CI com GitHub Actions para garantir qualidade de código
 
 ---
 
@@ -29,16 +40,16 @@ Aplicação React com Context API, TailwindCSS, React Router e testes automatiza
 
 ### Funcionalidades:
 
-* Login, registro e redefinição de senha
-* Login como visitante (sem cadastro)
-* Listagem, criação, edição e exclusão de tarefas
-* Proteção de rotas com Context API e JWT
-* UI moderna e responsiva
+- Login, registro e redefinição de senha
+- Login como visitante (sem cadastro)
+- Listagem, criação, edição e exclusão de tarefas
+- Proteção de rotas com Context API e JWT
+- UI moderna e responsiva
 
 ### Requisitos:
 
-* Node.js 20+
-* NPM 9+ ou Yarn
+- Node.js 20+
+- NPM 9+ ou Yarn
 
 ### Instalação:
 
@@ -58,17 +69,17 @@ API RESTful com autenticação via Sanctum, suporte a UUID e testes automatizado
 
 ### Funcionalidades:
 
-* Registro, login, logout e login como visitante
-* Redefinição de senha via e-mail
-* CRUD completo de tarefas com UUID
-* Respostas padronizadas em JSON
-* Testes com PHPUnit
+- Registro, login, logout e login como visitante
+- Redefinição de senha via e-mail
+- CRUD completo de tarefas com UUID
+- Respostas padronizadas em JSON
+- Testes com PHPUnit
 
 ### Requisitos:
 
-* PHP 8.2+
-* Composer 2+
-* MySQL 8
+- PHP 8.2+
+- Composer 2+
+- MySQL 8
 
 ### Instalação:
 
@@ -92,25 +103,25 @@ Este projeto possui dois workflows configurados para garantir qualidade de códi
 
 Executa os testes automatizados do Laravel em ambiente com MySQL:
 
-* Roda em pushes e PRs para a branch `dev`
-* Instala dependências via Composer
-* Prepara `.env` e roda `migrate`
-* Executa `php artisan test`
+- Roda em pushes e PRs para a branch `dev`
+- Instala dependências via Composer
+- Prepara `.env` e roda `migrate`
+- Executa `php artisan test`
 
 ### 🧪 `frontend-test.yml`
 
 Executa os testes do React com Vitest:
 
-* Roda em pushes e PRs para a branch `dev`
-* Instala dependências via `npm ci`
-* Roda testes com `npx vitest run --environment jsdom`
+- Roda em pushes e PRs para a branch `dev`
+- Instala dependências via `npm ci`
+- Roda testes com `npx vitest run --environment jsdom`
 
 ---
 
 ## 🔗 Comunicação entre Frontend e Backend
 
-* As rotas da API são consumidas no React via `fetch` com JWT armazenado no contexto.
-* A variável `VITE_API_URL` no frontend define o endereço da API.
+- As rotas da API são consumidas no React via `fetch` com JWT armazenado no contexto.
+- A variável `VITE_API_URL` no frontend define o endereço da API.
 
 ### Exemplo de chamada:
 
@@ -119,7 +130,7 @@ await fetch(`${import.meta.env.VITE_API_URL}/api/tasks`, {
   headers: {
     Authorization: `Bearer ${token}`
   }
-})
+});
 ```
 
 ---
@@ -128,21 +139,21 @@ await fetch(`${import.meta.env.VITE_API_URL}/api/tasks`, {
 
 ### Frontend:
 
-* Vitest + Testing Library (`npm run test`)
-* Testes de login, registro, tarefas, modais e formulários
+- Vitest + Testing Library (`npm run test`)
+- Testes de login, registro, tarefas, modais e formulários
 
 ### Backend:
 
-* PHPUnit (`php artisan test`)
-* Testes de Auth, Reset, Guest e Tarefas
+- PHPUnit (`php artisan test`)
+- Testes de Auth, Reset, Guest e Tarefas
 
 ---
 
 ## 📋 Considerações Finais
 
-* O projeto segue boas práticas de código, validação e organização
-* APIs retornam erros e validações de forma clara e consistente
-* Ideal para uso como template de autenticação + tarefas com frontend e backend desacoplados
+- O projeto segue boas práticas de código, validação e organização
+- APIs retornam erros e validações de forma clara e consistente
+- Ideal para uso como template de autenticação + tarefas com frontend e backend desacoplados
 
 ---
 
