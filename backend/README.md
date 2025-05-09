@@ -1,61 +1,218 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Backend - Tasks API (Laravel 12)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Este diretório contém o backend da aplicação Tasks, desenvolvido com Laravel 12. Ele fornece uma API RESTful segura para o gerenciamento de tarefas, autenticação de usuários e login como visitante, além de suporte para redefinição de senha via e-mail.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## ✅ Funcionalidades
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+* Registro, login e logout de usuários
+* Redefinição de senha com envio de e-mail personalizado
+* Login como visitante (sem necessidade de cadastro)
+* CRUD completo de tarefas (criar, listar, editar, excluir, concluir)
+* Autenticação via token JWT com Laravel Sanctum
+* Uso de UUID como identificador único para usuários e tarefas
+* Retorno de erros de formulário padronizados em JSON
+* Retorno padronizado de erros HTTP como 404, 401, 405 e 500
+* Separação de responsabilidades por controlador (Auth, Tasks, Reset, Guest)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## ⚙️ Requisitos do Ambiente
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+* PHP 8.2+
+* Laravel 12
+* Composer 2+
+* MySQL 8
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 🚀 Instalação
 
-## Laravel Sponsors
+```bash
+cd backend
+cp .env.example .env
+composer install
+php artisan key:generate
+php artisan migrate
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+> Certifique-se de configurar corretamente o banco de dados no arquivo `.env`.
 
-### Premium Partners
+---
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development/)**
-- **[Active Logic](https://activelogic.com)**
+## 🔧 Ajustes de Bootstrap e Exceções Globais
 
-## Contributing
+No arquivo `bootstrap/app.php`, foi removida a rota web padrão:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```php
+web: __DIR__.'/../routes/web.php',
+```
 
-## Code of Conduct
+E adicionada a rota da API:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```php
+api: __DIR__.'/../routes/api.php',
+```
 
-## Security Vulnerabilities
+Além disso, foi incluído um bloco de exceções personalizadas para garantir que todos os erros HTTP sejam retornados em JSON:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```php
+->withExceptions(function (Exceptions $exceptions) {
+    $exceptions->renderable(function (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e, $request) {
+        if ($request->expectsJson() || $request->is('api/*')) {
+            return response()->json(['message' => 'Rota não encontrada.', 'status' => 404], 404);
+        }
+    });
 
-## License
+    $exceptions->renderable(function (\Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException $e, $request) {
+        if ($request->expectsJson() || $request->is('api/*')) {
+            return response()->json(['message' => 'Método não permitido.', 'status' => 405], 405);
+        }
+    });
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+    $exceptions->renderable(function (\Illuminate\Auth\AuthenticationException $e, $request) {
+        if ($request->expectsJson() || $request->is('api/*')) {
+            return response()->json(['message' => 'Não autenticado.', 'status' => 401], 401);
+        }
+    });
+
+    $exceptions->renderable(function (\Throwable $e, $request) {
+        if ($request->expectsJson() || $request->is('api/*')) {
+            $status = method_exists($e, 'getStatusCode') ? $e->getStatusCode() : 500;
+            return response()->json(['message' => $e->getMessage() ?: 'Erro no servidor.', 'status' => $status], $status);
+        }
+    });
+})
+```
+
+---
+
+## 📌 Testes Automatizados
+
+A API possui testes automatizados organizados por domínio, garantindo cobertura para as principais funcionalidades:
+
+### 🧪 AuthTest
+
+Local: `tests/Feature/AuthTest.php`
+
+* ✅ `user_can_register`
+* ✅ `user_can_login`
+* ✅ `login_wrong_credentials_fails`
+* ✅ `user_can_logout`
+
+### 🔐 ForgotPasswordTest
+
+Local: `tests/Feature/ForgotPasswordTest.php`
+
+* ✅ `it_sends_a_reset_link_email`
+* ✅ `it_resets_the_password_with_a_valid_token`
+* ✅ `it_fails_to_reset_with_invalid_token`
+
+### 👤 GuestLoginTest
+
+Local: `tests/Feature/GuestLoginTest.php`
+
+* ✅ `it_creates_a_guest_user_and_returns_a_token`
+* ✅ `it_creates_unique_guest_emails`
+
+### ✅ TaskTest
+
+Local: `tests/Feature/TaskTest.php`
+
+* ✅ `user_can_list_tasks`
+* ✅ `user_can_create_task`
+* ✅ `user_can_update_task`
+* ✅ `user_can_delete_task`
+
+Para executar os testes:
+
+```bash
+php artisan test
+```
+
+---
+
+## 📝 Retorno de Erros de Formulário
+
+A aplicação utiliza um controlador dedicado (`FormErrorController`) para retornar erros de validação com mensagens personalizadas em formato JSON.
+
+### Exemplo de uso:
+
+```php
+$validator = Validator::make($request->all(), [...]);
+if ($validator->fails()) {
+    return FormErrorController::validation($validator);
+}
+```
+
+### Implementação:
+
+```php
+public static function validation(Validator $validator)
+{
+    throw new HttpResponseException(response()->json([
+        'status' => 'error',
+        'message' => $validator->errors(),
+    ], 422));
+}
+```
+
+### Exemplo de resposta:
+
+```json
+{
+  "status": "error",
+  "message": {
+    "email": ["Informe um e-mail válido."]
+  }
+}
+```
+
+---
+
+## 🔑 Uso de UUID como ID
+
+Ambos os modelos `User` e `Task` utilizam UUID como chave primária ao invés de IDs auto-incrementais.
+
+### Exemplo - `User.php`
+
+```php
+public $incrementing = false;
+protected $keyType = 'string';
+
+protected static function boot()
+{
+    parent::boot();
+
+    static::creating(function ($model) {
+        if (empty($model->{$model->getKeyName()})) {
+            $model->{$model->getKeyName()} = (string) \Illuminate\Support\Str::uuid();
+        }
+    });
+}
+```
+
+### Exemplo - `Task.php`
+
+```php
+public $incrementing = false;
+protected $keyType = 'string';
+
+protected static function boot()
+{
+    parent::boot();
+
+    static::creating(function ($model) {
+        if (empty($model->{$model->getKeyName()})) {
+            $model->{$model->getKeyName()} = (string) \Illuminate\Support\Str::uuid();
+        }
+    });
+}
+```
+
+Isso garante unicidade global dos registros e facilita a manipulação de dados entre serviços distintos.
+
+---
+
+Para mais detalhes, consulte a documentação do Laravel 12 ou abra uma issue neste repositório.
